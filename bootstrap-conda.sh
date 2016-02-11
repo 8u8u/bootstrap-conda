@@ -98,8 +98,10 @@ if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" $HOME/.bashrc  #/$HOME/.bashrc
     echo "CONDA_BIN_PATH found in $HOME/.bashrc, skipping..."
 else
     echo "Adding path definition to profiles..."
-    echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a /etc/profile.d/conda_config.sh /etc/*bashrc /etc/profile  $HOME/*shrc #/etc/environment
+    echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a /etc/profile.d/conda_config.sh /etc/*bashrc /etc/profile #/etc/environment
     #echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a $HOME/*shrc
+    echo 'export PATH=$CONDA_BIN_PATH:$PATH' | tee -a /etc/profile.d/conda_config.sh  /etc/*bashrc /etc/profile #/etc/environment
+
 fi
 
 echo "Finished bootstrapping via Miniconda, sourcing .bashrc..."

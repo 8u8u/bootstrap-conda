@@ -6,14 +6,12 @@ CONDA_INSTALL_PATH="/usr/local/bin/miniconda"
 # 0. Specify Miniconda version
 # 0.1 A few parameters
 # specify base operating system
-OS_TYPE="Linux-x86_64.sh"
+OS_TYPE="Linux-x86_64.sh" #
 # specify Miniconda release
-MINICONDA_VER='3.19.0'
+MINICONDA_VER='4.0.5'
 ## Python 2 or 3?
-MINICONDA_VARIANT="Miniconda2"  #for Python 2.7.x
-expectedHash="628f158791daf7d634fb6894045a6be1"
-#MINICONDA_VARIANT="Miniconda3"  #for Python 3.5.x
-#expectedHash="b834b525d3f42add8f2af0153d13f498"
+MINICONDA_VARIANT="Miniconda3"  #for Python 2.7.x
+expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
 
 ## 0. Compute Miniconda version
 miniconda="$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
@@ -84,12 +82,11 @@ source ~/.bashrc
 echo "Updating conda..."
 conda update -q conda
 # Useful for debugging any issues with conda
-conda info -a
+    conda info -a
 
 # Install useful conda utilities in root env
 echo "Installing useful conda utilities in root env..."
-conda install pip anaconda-client conda-build conda-env
-conda install -n root -c conda conda-env
+conda install anaconda-client conda-build
 
 # 2.3 Update global profiles to add the miniconda location to PATH
 echo "Updating global profiles to export miniconda bin location to PATH..."
@@ -106,4 +103,3 @@ fi
 
 echo "Finished bootstrapping via Miniconda, sourcing .bashrc..."
 source ~/.bashrc
-

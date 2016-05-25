@@ -76,7 +76,7 @@ echo "Updated PATH: $PATH"
 echo "And also HOME: $HOME"
 hash -r
 which conda
-conda config --set always_yes yes --set changeps1 no
+conda config --set always_yes true --set changeps1 false
 source ~/.bashrc
 
 echo "Updating conda..."

@@ -18,17 +18,19 @@ fi
 if [[ ! -v MINICONDA_VARIANT ]]; then
     echo "Setting MINICONDA_VARIANT  ... "
     MINICONDA_VARIANT="Miniconda3"  #for Python 3.5.x
-    expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
     echo "Set MINICONDA_VARIANT to $MINICONDA_VARIANT"
-# specify Miniconda release
+fi
+# specify Miniconda release (e.g., MINICONDA_VER='4.0.5')
 if [[ ! -v MINICONDA_VER ]]; then
     echo "Setting MINICONDA_VER ..."
-    MINICONDA_VER='4.0.5'
+    MINICONDA_VER='latest'
     set "Set MINICONDA_VER to $MINICONDA_VER"
 fi
 
-## 0. Compute Miniconda version
+## 0.2 Compute Miniconda version
 miniconda="$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
+## 0.3 Set MD5 hash for check (if desired)
+#expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
 
 # 1. Setup Miniconda Install
 ## 1.1 Define Miniconda install directory
@@ -67,7 +69,7 @@ if [[ ! -v expectedHash ]]; then
     fi
 fi
 
-# 2. Install Conda
+# 2. Install conda
 ## 2.1 Via bootstrap
 LOCAL_CONDA_PATH="$PROJ_DIR/miniconda"
 if [[ ! -d $LOCAL_CONDA_PATH ]]; then

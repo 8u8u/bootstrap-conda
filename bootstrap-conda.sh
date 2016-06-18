@@ -1,18 +1,31 @@
 #!/bin/bash
 set -e
 
-CONDA_INSTALL_PATH="/usr/local/bin/miniconda"
-
+if [[ ! -v CONDA_INSTALL_PATH ]]; then
+    echo "Setting CONDA_INSTALL_PATH ..."
+    CONDA_INSTALL_PATH="/usr/local/bin/miniconda"
+    echo "Set CONDA_INSTALL_PATH to $CONDA_INSTALL_PATH"
+fi
 # 0. Specify Miniconda version
 # 0.1 A few parameters
 # specify base operating system
-OS_TYPE="Linux-x86_64.sh"
-
+if [[ ! -v OS_TYPE ]]; then
+    echo "Setting OS_TYPE ..."
+    OS_TYPE="Linux-x86_64.sh"
+    echo "Set OS_TYPE to $OS_TYPE"
+fi
 ## Python 2 or 3?
-MINICONDA_VARIANT="Miniconda3"  #for Python 3.5.x
-expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
+if [[ ! -v MINICONDA_VARIANT ]]; then
+    echo "Setting MINICONDA_VARIANT  ... "
+    MINICONDA_VARIANT="Miniconda3"  #for Python 3.5.x
+    expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
+    echo "Set MINICONDA_VARIANT to $MINICONDA_VARIANT"
 # specify Miniconda release
-MINICONDA_VER='4.0.5'
+if [[ ! -v MINICONDA_VER ]]; then
+    echo "Setting MINICONDA_VER ..."
+    MINICONDA_VER='4.0.5'
+    set "Set MINICONDA_VER to $MINICONDA_VER"
+fi
 
 ## 0. Compute Miniconda version
 miniconda="$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
@@ -46,10 +59,12 @@ else
 fi
 
 # 1.3 #md5sum hash check of miniconda installer
-md5Output=$(md5sum $MINICONDA_SCRIPT_PATH | awk '{print $1}')
-if [ "$expectedHash" != "$md5Output" ]; then
-    echo "Unexpected md5sum $md5Output for $miniconda"
-    exit 1
+if [[ ! -v expectedHash ]]; then
+    md5Output=$(md5sum $MINICONDA_SCRIPT_PATH | awk '{print $1}')
+    if [ "$expectedHash" != "$md5Output" ]; then
+        echo "Unexpected md5sum $md5Output for $miniconda"
+        exit 1
+    fi
 fi
 
 # 2. Install Conda
@@ -83,7 +98,7 @@ source ~/.bashrc
 echo "Updating conda..."
 conda update -q conda
 # Useful for debugging any issues with conda
-    conda info -a
+conda info -a
 
 # Install useful conda utilities in root env
 echo "Installing useful conda utilities in root env..."

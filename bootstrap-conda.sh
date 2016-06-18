@@ -29,6 +29,7 @@ fi
 
 ## 0.2 Compute Miniconda version
 miniconda="$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
+echo "Miniconda verion specified: $miniconda"
 ## 0.3 Set MD5 hash for check (if desired)
 #expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
 

@@ -36,14 +36,9 @@ echo "Miniconda verion specified: $miniconda"
 # 1. Setup Miniconda Install
 ## 1.1 Define Miniconda install directory
 echo "Working directory: $PWD"
-if [ $# -eq 0 ]
-    then
+if [[ ! -v $PROJ_DIR ]]; then
     echo "No path argument specified, setting install directory as working directory: $PWD."
     PROJ_DIR=$PWD
-
-else
-    echo "Path argument specified, installing to: $1"
-    PROJ_DIR=$1
 fi
 
 ## 1.2 Setup Miniconda

@@ -57,7 +57,7 @@ else
 fi
 
 # 1.3 #md5sum hash check of miniconda installer
-if [[ ! -v expectedHash ]]; then
+if [[ -v expectedHash ]]; then
     md5Output=$(md5sum $MINICONDA_SCRIPT_PATH | awk '{print $1}')
     if [ "$expectedHash" != "$md5Output" ]; then
         echo "Unexpected md5sum $md5Output for $miniconda"

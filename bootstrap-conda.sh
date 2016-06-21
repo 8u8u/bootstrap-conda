@@ -2,27 +2,27 @@
 set -e
 
 if [[ ! -v CONDA_INSTALL_PATH ]]; then
-    echo "Setting CONDA_INSTALL_PATH ..."
+    echo "CONDA_INSTALL_PATH not set, setting ..."
     CONDA_INSTALL_PATH="/usr/local/bin/miniconda"
     echo "Set CONDA_INSTALL_PATH to $CONDA_INSTALL_PATH"
 fi
 # 0. Specify Miniconda version
-# 0.1 A few parameters
-# specify base operating system
+## 0.1 A few parameters
+## specify base operating system
 if [[ ! -v OS_TYPE ]]; then
-    echo "Setting OS_TYPE ..."
+    echo "OS_TYPE not set, setting  ..."
     OS_TYPE="Linux-x86_64.sh"
     echo "Set OS_TYPE to $OS_TYPE"
 fi
 ## Python 2 or 3?
 if [[ ! -v MINICONDA_VARIANT ]]; then
-    echo "Setting MINICONDA_VARIANT  ... "
+    echo "MINICONDA_VARIANT not set, setting ... "
     MINICONDA_VARIANT="Miniconda3"  #for Python 3.5.x
     echo "Set MINICONDA_VARIANT to $MINICONDA_VARIANT"
 fi
-# specify Miniconda release (e.g., MINICONDA_VER='4.0.5')
+## specify Miniconda release (e.g., MINICONDA_VER='4.0.5')
 if [[ ! -v MINICONDA_VER ]]; then
-    echo "Setting MINICONDA_VER ..."
+    echo "MINICONDA_VER not set, setting ..."
     MINICONDA_VER='latest'
     set "Set MINICONDA_VER to $MINICONDA_VER"
 fi
@@ -56,7 +56,7 @@ else
   chmod 755 $MINICONDA_SCRIPT_PATH
 fi
 
-# 1.3 #md5sum hash check of miniconda installer
+## 1.3 #md5sum hash check of miniconda installer
 if [[ -v expectedHash ]]; then
     md5Output=$(md5sum $MINICONDA_SCRIPT_PATH | awk '{print $1}')
     if [ "$expectedHash" != "$md5Output" ]; then
@@ -82,7 +82,7 @@ else
     echo "Existing directory at path: $LOCAL_CONDA_PATH, skipping install!"
 fi
 
-# 2.2 Update PATH and conda...
+## 2.2 Update PATH and conda...
 echo "Setting environment variables..."
 CONDA_BIN_PATH="$CONDA_INSTALL_PATH/bin"
 export PATH="$CONDA_BIN_PATH:$PATH"
@@ -102,7 +102,7 @@ conda info -a
 echo "Installing useful conda utilities in root env..."
 conda install anaconda-client conda-build
 
-# 2.3 Update global profiles to add the miniconda location to PATH
+## 2.3 Update global profiles to add the miniconda location to PATH
 echo "Updating global profiles to export miniconda bin location to PATH..."
 if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" /etc/profile  #/$HOME/.bashrc
     then

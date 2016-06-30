@@ -100,10 +100,11 @@ conda info -a
 
 # Install useful conda utilities in root env
 echo "Installing useful conda utilities in root env..."
-conda install anaconda-client conda-build
+conda install -q anaconda-client conda-build
 
 echo "Updating all conda packages"
-conda update --all
+conda update -q --all
+
 ## 2.3 Update global profiles to add the miniconda location to PATH
 echo "Updating global profiles to export miniconda bin location to PATH..."
 if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" /etc/profile  #/$HOME/.bashrc

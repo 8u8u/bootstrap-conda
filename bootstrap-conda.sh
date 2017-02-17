@@ -93,17 +93,14 @@ which conda
 conda config --set always_yes true --set changeps1 false
 source ~/.bashrc
 
-echo "Updating conda..."
-conda update -q conda
-# Useful for debugging any issues with conda
-conda info -a
 
 # Install useful conda utilities in root env
 echo "Installing useful conda utilities in root env..."
 conda install -q anaconda-client conda-build
 
-echo "Updating all conda packages"
-conda update -q --all
+
+# Useful for debugging any issues with conda
+conda info -a
 
 ## 2.3 Update global profiles to add the miniconda location to PATH
 echo "Updating global profiles to export miniconda bin location to PATH..."

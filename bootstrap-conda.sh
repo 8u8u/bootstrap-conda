@@ -14,10 +14,10 @@ if [[ ! -v OS_TYPE ]]; then
     OS_TYPE="Linux-x86_64.sh"
     echo "Set OS_TYPE to $OS_TYPE"
 fi
-## Python 2 or 3?
+## Python 2 or 3 based miniconda?
 if [[ ! -v MINICONDA_VARIANT ]]; then
     echo "MINICONDA_VARIANT not set, setting ... "
-    MINICONDA_VARIANT="Miniconda3"  #for Python 3.5.x
+    MINICONDA_VARIANT="3"  #for Python 3.5.x
     echo "Set MINICONDA_VARIANT to $MINICONDA_VARIANT"
 fi
 ## specify Miniconda release (e.g., MINICONDA_VER='4.0.5')
@@ -28,8 +28,8 @@ if [[ ! -v MINICONDA_VER ]]; then
 fi
 
 ## 0.2 Compute Miniconda version
-miniconda="$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
-echo "Miniconda verion specified: $miniconda"
+miniconda="Miniconda$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
+echo "Complete Miniconda version resolved to: $miniconda"
 ## 0.3 Set MD5 hash for check (if desired)
 #expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
 
@@ -44,7 +44,7 @@ fi
 ## 1.2 Setup Miniconda
 cd $PROJ_DIR
 MINICONDA_SCRIPT_PATH="$PROJ_DIR/$miniconda"
-echo "Defined miniconda script path: $MINICONDA_SCRIPT_PATH"
+echo "Defined Miniconda script path: $MINICONDA_SCRIPT_PATH"
 
 if [[ -f "$MINICONDA_SCRIPT_PATH" ]]; then
   echo "Found existing Miniconda script at: $MINICONDA_SCRIPT_PATH"
@@ -94,12 +94,7 @@ conda config --set always_yes true --set changeps1 false
 source ~/.bashrc
 
 
-# Install useful conda utilities in root env
-echo "Installing useful conda utilities in root env..."
-conda install -q anaconda-client conda-build
-
-
-# Useful for debugging any issues with conda
+# Useful printout for debugging any issues with conda
 conda info -a
 
 ## 2.3 Update global profiles to add the miniconda location to PATH
@@ -117,3 +112,6 @@ fi
 
 echo "Finished bootstrapping via Miniconda, sourcing /etc/profile ..."
 source /etc/profile
+
+echo "Tip! If you're human, you might also consider installing useful conda packaging utilities in root env via..."
+echo "conda install -q anaconda-client conda-build"

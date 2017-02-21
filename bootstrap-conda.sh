@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+if [[ -f "/etc/profile.d/conda_config.sh" ]]; then
+    echo "conda_config.sh found in /etc/profile.d/, dataproc has installed conda previously. Skipping miniconda install!"
+    command -v conda >/dev/null && echo "conda command detected in $PATH"
+    exit 0
+fi
+
+
 if [[ ! -v CONDA_INSTALL_PATH ]]; then
     echo "CONDA_INSTALL_PATH not set, setting ..."
     CONDA_INSTALL_PATH="/usr/local/bin/miniconda"
@@ -50,7 +57,7 @@ if [[ -f "$MINICONDA_SCRIPT_PATH" ]]; then
   echo "Found existing Miniconda script at: $MINICONDA_SCRIPT_PATH"
 else
   echo "Downloading Miniconda script to: $MINICONDA_SCRIPT_PATH ..."
-  wget http://repo.continuum.io/miniconda/$miniconda -P "$PROJ_DIR"
+  wget https://repo.continuum.io/miniconda/$miniconda -P "$PROJ_DIR"
   echo "Downloaded $miniconda!"
   ls -al $MINICONDA_SCRIPT_PATH
   chmod 755 $MINICONDA_SCRIPT_PATH

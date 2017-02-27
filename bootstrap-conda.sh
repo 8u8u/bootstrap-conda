@@ -1,16 +1,15 @@
 #!/bin/bash
 set -e
 
-if [[ -f "/etc/profile.d/conda_config.sh" ]]; then
-    echo "conda_config.sh found in /etc/profile.d/, dataproc has installed conda previously. Skipping miniconda install!"
+if [[ -f "/etc/profile.d/conda.sh" ]]; then
+    echo "conda_config.sh found in /etc/profile.d/, Dataproc has installed conda previously. Skipping miniconda install!"
     command -v conda >/dev/null && echo "conda command detected in $PATH"
     exit 0
 fi
 
-
 if [[ ! -v CONDA_INSTALL_PATH ]]; then
     echo "CONDA_INSTALL_PATH not set, setting ..."
-    CONDA_INSTALL_PATH="/usr/local/bin/miniconda"
+    CONDA_INSTALL_PATH="/opt/conda"
     echo "Set CONDA_INSTALL_PATH to $CONDA_INSTALL_PATH"
 fi
 # 0. Specify Miniconda version
@@ -35,8 +34,8 @@ if [[ ! -v MINICONDA_VER ]]; then
 fi
 
 ## 0.2 Compute Miniconda version
-miniconda="Miniconda$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
-echo "Complete Miniconda version resolved to: $miniconda"
+MINICONDA_FULL_NAME="Miniconda$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
+echo "Complete Miniconda version resolved to: $MINICONDA_FULL_NAME"
 ## 0.3 Set MD5 hash for check (if desired)
 #expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
 
@@ -50,15 +49,15 @@ fi
 
 ## 1.2 Setup Miniconda
 cd $PROJ_DIR
-MINICONDA_SCRIPT_PATH="$PROJ_DIR/$miniconda"
+MINICONDA_SCRIPT_PATH="$PROJ_DIR/$MINICONDA_FULL_NAME"
 echo "Defined Miniconda script path: $MINICONDA_SCRIPT_PATH"
 
 if [[ -f "$MINICONDA_SCRIPT_PATH" ]]; then
   echo "Found existing Miniconda script at: $MINICONDA_SCRIPT_PATH"
 else
   echo "Downloading Miniconda script to: $MINICONDA_SCRIPT_PATH ..."
-  wget https://repo.continuum.io/miniconda/$miniconda -P "$PROJ_DIR"
-  echo "Downloaded $miniconda!"
+  wget https://repo.continuum.io/miniconda/$MINICONDA_FULL_NAME -P "$PROJ_DIR"
+  echo "Downloaded $MINICONDA_FULL_NAME!"
   ls -al $MINICONDA_SCRIPT_PATH
   chmod 755 $MINICONDA_SCRIPT_PATH
 fi
@@ -67,7 +66,7 @@ fi
 if [[ -v expectedHash ]]; then
     md5Output=$(md5sum $MINICONDA_SCRIPT_PATH | awk '{print $1}')
     if [ "$expectedHash" != "$md5Output" ]; then
-        echo "Unexpected md5sum $md5Output for $miniconda"
+        echo "Unexpected md5sum $md5Output for $MINICONDA_FULL_NAME"
         exit 1
     fi
 fi
@@ -79,7 +78,7 @@ if [[ ! -d $LOCAL_CONDA_PATH ]]; then
     #blow away old symlink / default Miniconda install
     rm -rf "$PROJ_DIR/miniconda"
     # Install Miniconda
-    echo "Installing $miniconda to $CONDA_INSTALL_PATH..."
+    echo "Installing $MINICONDA_FULL_NAME to $CONDA_INSTALL_PATH..."
     bash $MINICONDA_SCRIPT_PATH -b -p $CONDA_INSTALL_PATH -f
     chmod 755 $CONDA_INSTALL_PATH
     #create symlink
@@ -98,8 +97,6 @@ echo "And also HOME: $HOME"
 hash -r
 which conda
 conda config --set always_yes true --set changeps1 false
-source ~/.bashrc
-
 
 # Useful printout for debugging any issues with conda
 conda info -a
@@ -111,9 +108,8 @@ if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" /etc/profile  #/$HOME/.bashrc
     echo "CONDA_BIN_PATH found in /etc/profile , skipping..."
 else
     echo "Adding path definition to profiles..."
-    echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a /etc/profile.d/conda_config.sh /etc/*bashrc /etc/profile #/etc/environment
-    #echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a $HOME/*shrc
-    echo 'export PATH=$CONDA_BIN_PATH:$PATH' | tee -a /etc/profile.d/conda_config.sh  /etc/*bashrc /etc/profile #/etc/environment
+    echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a /etc/profile.d/conda.sh #/etc/*bashrc /etc/profile
+    echo 'export PATH=$CONDA_BIN_PATH:$PATH' | tee -a /etc/profile.d/conda.sh  #/etc/*bashrc /etc/profile
 
 fi
 

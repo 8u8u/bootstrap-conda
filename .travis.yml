@@ -1,0 +1,31 @@
+language: python
+python:
+  - 3.5
+
+env:
+  global:
+    - CONDA_INSTALL_PATH=$HOME/conda
+    - PROJ_DIR=$HOME/miniconda
+  matrix:
+    - PROFILE_FILE=$HOME/.bashrc
+
+sudo: required
+
+install:
+  - export MINICONDA_VER='4.2.12'
+  - export MINICONDA_VARIANT='3'
+  - export OS_TYPE="Linux-x86_64.sh"
+  - ./bootstrap-conda.sh
+  - source $PROFILE_FILE
+  
+after_install:
+  - more $PROFILE_FILE
+  - echo "$PATH"
+  - echo "$PWD"
+  - ls -la $HOME
+
+script:
+  - conda update --all --yes --quiet
+  - conda info
+  - conda list
+  - echo "$PATH"

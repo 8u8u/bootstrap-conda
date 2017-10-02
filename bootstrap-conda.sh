@@ -1,17 +1,7 @@
 #!/bin/bash
 set -e
 
-if [[ -f "/etc/profile.d/conda.sh" ]]; then
-    echo "conda_config.sh found in /etc/profile.d/, Dataproc has installed conda previously. Skipping miniconda install!"
-    command -v conda >/dev/null && echo "conda command detected in $PATH"
-    exit 0
-fi
 
-if [[ ! -v CONDA_INSTALL_PATH ]]; then
-    echo "CONDA_INSTALL_PATH not set, setting ..."
-    CONDA_INSTALL_PATH="/opt/conda"
-    echo "Set CONDA_INSTALL_PATH to $CONDA_INSTALL_PATH"
-fi
 # 0. Specify Miniconda version
 ## 0.1 A few parameters
 ## specify base operating system
@@ -36,8 +26,38 @@ fi
 ## 0.2 Compute Miniconda version
 MINICONDA_FULL_NAME="Miniconda$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
 echo "Complete Miniconda version resolved to: $MINICONDA_FULL_NAME"
+
 ## 0.3 Set MD5 hash for check (if desired)
 #expectedHash="b1b15a3436bb7de1da3ccc6e08c7a5df"
+
+if [[ ! -v PROFILE_FILE ]]; then
+    echo "PROFILE_FILE not set, setting ..."
+    export PROFILE_FILE=/etc/profile.d/conda.sh
+    echo "Set PROFILE_FILE to $PROFILE_FILE"
+else
+    mkdir -p $(dirname $PROFILE_FILE)
+    touch $PROFILE_FILE
+fi
+
+if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" $PROFILE_FILE  #/$HOME/.bashrc
+    then
+    echo "CONDA_BIN_PATH found in $PROFILE_FILE..."
+    command -v conda >/dev/null && echo "conda command detected in $PATH"
+    exit 0
+fi
+
+if [[ ! -v CONDA_INSTALL_PATH ]]; then
+    echo "CONDA_INSTALL_PATH not set, setting ..."
+    CONDA_INSTALL_PATH="/opt/conda"
+    echo "Set CONDA_INSTALL_PATH to $CONDA_INSTALL_PATH"
+fi
+
+## If conda is already installed, skip installation
+#if [[ -f "$PROFILE_DIR/conda.sh" ]]; then
+#    echo "conda_config.sh found in /etc/profile.d/, Dataproc has installed conda previously. Skipping miniconda install!"
+#    command -v conda >/dev/null && echo "conda command detected in $PATH"
+#    exit 0
+#fi
 
 # 1. Setup Miniconda Install
 ## 1.1 Define Miniconda install directory
@@ -103,18 +123,20 @@ conda info -a
 
 ## 2.3 Update global profiles to add the miniconda location to PATH
 echo "Updating global profiles to export miniconda bin location to PATH..."
-if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" /etc/profile  #/$HOME/.bashrc
+if grep -ir "CONDA_BIN_PATH=$CONDA_BIN_PATH" $PROFILE_FILE  #/$HOME/.bashrc
     then
     echo "CONDA_BIN_PATH found in /etc/profile , skipping..."
 else
     echo "Adding path definition to profiles..."
-    echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a /etc/profile.d/conda.sh #/etc/*bashrc /etc/profile
-    echo 'export PATH=$CONDA_BIN_PATH:$PATH' | tee -a /etc/profile.d/conda.sh  #/etc/*bashrc /etc/profile
+    echo "export CONDA_BIN_PATH=$CONDA_BIN_PATH" | tee -a $PROFILE_FILE #/etc/*bashrc /etc/profile
+    echo 'export PATH=$CONDA_BIN_PATH:$PATH' | tee -a $PROFILE_FILE  #/etc/*bashrc /etc/profile
 
 fi
 
-echo "Finished bootstrapping via Miniconda, sourcing /etc/profile ..."
-source /etc/profile
+echo "Finished bootstrapping via Miniconda, sourcing $PROFILE_FILE ..."
+source $PROFILE_FILE
 
 echo "Tip! If you're human, you might also consider installing useful conda packaging utilities in root env via..."
 echo "conda install -q anaconda-client conda-build"
+echo "Also, your newly-installed conda binary has been installed at $CONDA_BIN_PATH, so you might want to add it to your PATH if it isn't there already and ensure your init files set CONDA_BIN_PATH accordingly"
+echo "Similarly, $PROFILE_FILE will need to be source-ed next time you log in to have access to conda, so ensure your init files call them"

@@ -17,11 +17,15 @@ if [[ ! -v MINICONDA_VARIANT ]]; then
     echo "Set MINICONDA_VARIANT to $MINICONDA_VARIANT"
 fi
 ## specify Miniconda release (e.g., MINICONDA_VER='4.0.5')
-if [[ ! -v MINICONDA_VER ]]; then
-    echo "MINICONDA_VER not set, setting ..."
-    MINICONDA_VER='latest'
-    set "Set MINICONDA_VER to $MINICONDA_VER"
-fi
+### BEGIN TEMP FIX https://bombora.atlassian.net/browse/DS-1777:
+#if [[ ! -v MINICONDA_VER ]]; then
+#    echo "MINICONDA_VER not set, setting ..."
+#    MINICONDA_VER='latest'
+#    echo "Set MINICONDA_VER to $MINICONDA_VER"
+#fi
+MINICONDA_VER='4.5.1.rc0'
+### END TEMP FIX https://bombora.atlassian.net/browse/DS-1777:
+
 
 ## 0.2 Compute Miniconda version
 MINICONDA_FULL_NAME="Miniconda$MINICONDA_VARIANT-$MINICONDA_VER-$OS_TYPE"
@@ -76,7 +80,10 @@ if [[ -f "$MINICONDA_SCRIPT_PATH" ]]; then
   echo "Found existing Miniconda script at: $MINICONDA_SCRIPT_PATH"
 else
   echo "Downloading Miniconda script to: $MINICONDA_SCRIPT_PATH ..."
-  wget https://repo.continuum.io/miniconda/$MINICONDA_FULL_NAME -P "$PROJ_DIR"
+### BEGIN TEMP FIX https://bombora.atlassian.net/browse/DS-1777:
+  #wget https://repo.continuum.io/miniconda/$MINICONDA_FULL_NAME -P "$PROJ_DIR"
+  wget https://repo.anaconda.com/pkgs/misc/previews/miniconda/4.5.1/$MINICONDA_FULL_NAME -P "$PROJ_DIR"
+### END TEMP FIX https://bombora.atlassian.net/browse/DS-1777:
   echo "Downloaded $MINICONDA_FULL_NAME!"
   ls -al $MINICONDA_SCRIPT_PATH
   chmod 755 $MINICONDA_SCRIPT_PATH
